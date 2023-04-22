@@ -1,30 +1,41 @@
 # snakeToHumpSql
 
 #### 介绍
-sql文件蛇形命名转驼峰命名，以及视图
+sql文件蛇形命名转驼峰命名，以及视图的部分创建
+
+
 
 #### 软件架构
 软件架构说明
+jak1.8
 
 
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  将数据库导出的sql文件重命名为 sql.sql ，并且将当前jar包放在同一目录，运行输出为 out.sql
+2.  java -jar snakeToHumpSql-x.x.jar -s 30 -t 30
+3.  参数：-s 水平制表大小  ; -t 类型，具体类型如下
+
+```txt
+ * type是输出类型
+ *  1：`province_id`
+ *  2：`province_id`  `provinceId`
+ *  3：`province_id`  `provinceId`  int
+ *  4：`province_id`  `provinceId`  int  '省市'
+ *  5：`provinceId`
+ *  6: a.province_id AS provinceId, 
+ *  7：输出6类型的视图，重复标识出来
+ *  8：输出6类型的视图，重复自动去重，只保留第一个
+ *  其他数字默认转化为4
+```
+
+
 
 #### 参与贡献
+杨小羊
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+
 
 
 #### 特技
