@@ -161,6 +161,7 @@ public class SnakeToHumpUtils {
                         line = "";
                     }
                 }
+                //表头表名
                 if (line.contains("CREATE TABLE")) {
                     String[] split = line.split("`");
 
@@ -181,6 +182,14 @@ public class SnakeToHumpUtils {
                         tableAlias = tableAlias + tableOther;
                     }
 
+                }
+                if(line.contains("COMMENT =")){
+                    String trim = line.split("COMMENT =")[1].trim();
+                    int lastIndexOf = trim.lastIndexOf("'");
+                    trim=trim.substring(0,lastIndexOf+1);
+                    writer.write("table info = " + trim );
+                    writer.newLine();
+                    writer.flush();
                 }
                 if (line.contains("DROP TABLE")) {
                     writer.newLine();
