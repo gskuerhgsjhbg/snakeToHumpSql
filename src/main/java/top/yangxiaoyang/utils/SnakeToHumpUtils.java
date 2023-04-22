@@ -7,34 +7,20 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class SnakeToHumpUtils {
-    private HashMap<String,Integer> hashMap;
+    private HashMap<String, Integer> hashMap;
+
     public void run(int types, int size) throws FileNotFoundException {
         //数据库的字段
-        String[] dataTypes = {
-                " VARCHAR", " BINARY", " VARBINARY", " TEXT", " BLOB", " ENUM", " SET", " LONGTEXT",
-                " TINYINT", " SMALLINT", " MEDIUMINT", " BIGINT",
-                " DATETIME", " TIMESTAMP", " YEAR",
-                " FLOAT", " DOUBLE",
-                " DECIMAL",
-                " BOOLEAN",
-                " BIT",
-                " varchar", " binary", " varbinary", " text", " blob", " enum", " set", " longtext",
-                " tinyint", " smallint", " mediumint", " bigint",
-                " datetime", " timestamp", " year",
-                " float", " double",
-                " decimal",
-                " boolean",
-                " bit"
-        };
+        String[] dataTypes = {" VARCHAR", " BINARY", " VARBINARY", " TEXT", " BLOB", " ENUM", " SET", " LONGTEXT", " TINYINT", " SMALLINT", " MEDIUMINT", " BIGINT", " DATETIME", " TIMESTAMP", " YEAR", " FLOAT", " DOUBLE", " DECIMAL", " BOOLEAN", " BIT", " varchar", " binary", " varbinary", " text", " blob", " enum", " set", " longtext", " tinyint", " smallint", " mediumint", " bigint", " datetime", " timestamp", " year", " float", " double", " decimal", " boolean", " bit"};
         String[] otherDataTypes = {" CHAR", " INT", " DATE", " TIME", " char", " int", " date", " time",};
-        
-        
+
+
         //输入文件与输出文件
         String inPath = "sql.sql";
         String outPath = "out.sql";
 
         //开始操作
-        hashMap=new HashMap<>();
+        hashMap = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(Paths.get(inPath)), StandardCharsets.UTF_8))) {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(outPath)), StandardCharsets.UTF_8));
             //new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
@@ -141,10 +127,10 @@ public class SnakeToHumpUtils {
                                 sss = viewMode(line1.toString(), line2.toString(), tableAlias);
                                 break;
                             case 7:
-                                sss = viewModeSql(hashMap,line1.toString(), line2.toString(), tableAlias);
+                                sss = viewModeSql(hashMap, line1.toString(), line2.toString(), tableAlias);
                                 break;
                             case 8:
-                                sss = viewModeSqlDeduplication(hashMap,line1.toString(), line2.toString(), tableAlias);
+                                sss = viewModeSqlDeduplication(hashMap, line1.toString(), line2.toString(), tableAlias);
                                 break;
                             default:
                                 sss = line1 + "" + line2 + "" + line3 + "" + line4;
@@ -183,13 +169,14 @@ public class SnakeToHumpUtils {
                     }
 
                 }
-                if(line.contains("COMMENT =")){
+                if (line.contains("COMMENT =")) {
                     String trim = line.split("COMMENT =")[1].trim();
                     int lastIndexOf = trim.lastIndexOf("'");
-                    trim=trim.substring(0,lastIndexOf+1);
-                    writer.write("table info = " + trim );
+                    trim = trim.substring(0, lastIndexOf + 1);
+                    writer.write("table info = " + trim);
                     writer.newLine();
                     writer.flush();
+                    //你好
                 }
                 if (line.contains("DROP TABLE")) {
                     writer.newLine();
@@ -219,12 +206,12 @@ public class SnakeToHumpUtils {
         line1 = line1.trim();
         line2 = line2.trim();
 
-        String hash=line1.hashCode()+"";
-        if(hashMap.get(hash) == null){
+        String hash = line1.hashCode() + "";
+        if (hashMap.get(hash) == null) {
             //不存在
             String s1 = line1.substring(1, line1.length() - 1);
             String s2 = line2.substring(1, line2.length() - 1);
-            hashMap.put(hash,1);
+            hashMap.put(hash, 1);
             return tableAlias + "." + s1 + "  AS  " + s2 + ",";
         } else {
             return "";
@@ -243,26 +230,24 @@ public class SnakeToHumpUtils {
     private String viewModeSql(HashMap<String, Integer> hashMap, String line1, String line2, String tableAlias) {
         line1 = line1.trim();
         line2 = line2.trim();
-        
-        String hash=line1.hashCode()+"";
-        if(hashMap.get(hash) == null){
+
+        String hash = line1.hashCode() + "";
+        if (hashMap.get(hash) == null) {
             //不存在
             String s1 = line1.substring(1, line1.length() - 1);
             String s2 = line2.substring(1, line2.length() - 1);
-            hashMap.put(hash,1);
-            return tableAlias + "." + s1 + "  AS  " + s2 + ","; 
+            hashMap.put(hash, 1);
+            return tableAlias + "." + s1 + "  AS  " + s2 + ",";
         } else {
-           //已经存在
+            //已经存在
             String s1 = line1.substring(1, line1.length() - 1);
             String s2 = line2.substring(1, line2.length() - 1);
 
             //标识
-            Integer integer = hashMap.get(hash)+1;
-            String rs =  "\n" +
-                    "重复数据   当前为第 "+integer+"条\n----------------------------------------------------------------------------" +
-                    "\n"+tableAlias + "." + s1 + "  AS  " + s2 + ",\n";
+            Integer integer = hashMap.get(hash) + 1;
+            String rs = "\n" + "重复数据   当前为第 " + integer + "条\n----------------------------------------------------------------------------" + "\n" + tableAlias + "." + s1 + "  AS  " + s2 + ",\n";
             //数据更新
-            hashMap.put(hash,integer);
+            hashMap.put(hash, integer);
             return rs;
         }
     }
